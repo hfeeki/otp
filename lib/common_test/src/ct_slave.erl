@@ -386,6 +386,7 @@ check_for_ssh_running() ->
 
 % spawn node remotely
 spawn_remote_node(Host, Node, Options) ->
+    ENode = enodename(Host, Node),
     Username = Options#options.username,
     Password = Options#options.password,
     ErlFlags = Options#options.erl_flags,
@@ -400,7 +401,7 @@ spawn_remote_node(Host, Node, Options) ->
     check_for_ssh_running(),
     {ok, SSHConnRef} = ssh:connect(atom_to_list(Host), 22, SSHOptions),
     {ok, SSHChannelId} = ssh_connection:session_channel(SSHConnRef, infinity),
-    ssh_connection:exec(SSHConnRef, SSHChannelId, get_cmd(Node, ErlFlags), infinity).
+    ssh_connection:exec(SSHConnRef, SSHChannelId, get_cmd(ENode, ErlFlags), infinity).
 
 % call functions on a remote Erlang node
 call_functions(_Node, []) ->
