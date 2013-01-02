@@ -402,6 +402,7 @@ check_for_ssh_running() ->
 
 % spawn node remotely
 spawn_remote_node(Host, Node, Options) ->
+    ENode = enodename(Host, Node),
     #options{username=Username,
 	     password=Password,
 	     erl_flags=ErlFlags,
@@ -418,7 +419,7 @@ spawn_remote_node(Host, Node, Options) ->
     {ok, SSHConnRef} = ssh:connect(atom_to_list(Host), 22, SSHOptions),
     {ok, SSHChannelId} = ssh_connection:session_channel(SSHConnRef, infinity),
     ssh_setenv(SSHConnRef, SSHChannelId, Env),
-    ssh_connection:exec(SSHConnRef, SSHChannelId, get_cmd(Node, ErlFlags), infinity).
+    ssh_connection:exec(SSHConnRef, SSHChannelId, get_cmd(ENode, ErlFlags), infinity).
 
 
 ssh_setenv(SSHConnRef, SSHChannelId, [{Var, Value} | Vars])
